@@ -1,30 +1,26 @@
 package com.example.fetchcode;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.TypedArrayUtils;
-
 import android.net.Uri;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fetchcode.utills.NetworkU;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
