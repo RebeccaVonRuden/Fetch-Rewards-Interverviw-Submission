@@ -15,6 +15,7 @@ import java.util.Collections;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Button;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button updateData;
     ListView list;
     ArrayList<String> itemList;
+    ArrayAdapter<String> listAdapt;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +45,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         IdDataResult = findViewById(R.id.Id_Data_Result);
         updateData = findViewById(R.id.update_data);
         list = findViewById(R.id.list_Of_Res);
+        createList();
 
         updateData.setOnClickListener(this);
+    }
+
+    private void createList() {
+        itemList = new ArrayList<>();
+        listAdapt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_2, itemList);
     }
 
     @Override
@@ -80,7 +89,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPostExecute(String s) {
             try {
+                if(!s.isEmpty()){
                 parseJson(s);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -109,10 +120,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             for (int i = 0; i < allDataPoints.size();i++) {
                 current = allDataPoints.get(i);
-                String name = current.get("name").toString();
-                // filter out unwanted data
-                if (name == "" || name == null) {
-                    allDataPoints.remove(i);
+                if(current.getString("name") != "null" || current.getString("name") != null){
+                    String name = current.getString("name");
+                    // filter out unwanted data
+                    if (name != "") {
+                        allDataPoints.remove(i);
+                    }
+                    else{
+                        itemList.add(allDataPoints.get(i).toString());
+                    }
                 }
             }
 //                for (int i = 0; i < dataArray.length(); i++){
@@ -123,8 +139,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                Collections.sort(dataArray,Collections.reverseOrder());
 //                dataArray = Arrays.sort(dataArray,)
 //            }
-
             IdDataResult.setText(allDataPoints.toString());
+            list.setAdapter(listAdapt);            listAdapt.notifyDataSetChanged();
         }
     }
 }
