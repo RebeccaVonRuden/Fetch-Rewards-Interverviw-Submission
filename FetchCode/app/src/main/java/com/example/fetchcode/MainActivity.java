@@ -1,19 +1,25 @@
 package com.example.fetchcode;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.TypedArrayUtils;
 
 import android.net.Uri;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Button;
 
-import com.example.fetchcode.utills.Network;
+import com.example.fetchcode.utills.NetworkU;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,17 +30,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     TextView Welcome;
     TextView IdDataResult;
-    Button update_data;
+    Button updateData;
+    ListView list;
+    ArrayList<String> itemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Welcome = findViewById(R.id.Welcome);
-        IdDataResult = findViewById(R.id.IdDataResult);
-        update_data = findViewById(R.id.update_data);
+        IdDataResult = findViewById(R.id.Id_Data_Result);
+        updateData = findViewById(R.id.update_data);
+        list = findViewById(R.id.list_Of_Res);
 
-        update_data.setOnClickListener(this);
+        updateData.setOnClickListener(this);
     }
 
     @Override
@@ -61,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             URL url = urls[0];
             String data = null;
             try{
-                data = Network.makeHTTPrequest(url);
+                data = NetworkU.makeHTTPrequest(url);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -77,32 +86,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         public void parseJson(String data) throws JSONException {
-            JSONObject jsonObject = null;
-            JSONArray dataArray = null;
+;
+            JSONArray jsonArray = null;
+            ArrayList<JSONObject>  allDataPoints = new ArrayList<JSONObject>();
+            JSONObject current = null;
+
             try{
-                jsonObject = new JSONObject(data);
+                jsonArray = new JSONArray(data);
             } catch ( JSONException e) {
                 e.printStackTrace();
             }
             try {
-                dataArray = jsonObject.getJSONArray("data");
+                for(int i = 0; i < jsonArray.length(); i++)
+                {
+                    JSONObject currentObject = jsonArray.getJSONObject(i);
+                    allDataPoints.add(currentObject);
+
+                }
             } catch (JSONException e){
                 e.printStackTrace();
             }
 
-            for (int i = 0; i < dataArray.length(); i++){
-                JSONObject allData = dataArray.getJSONObject(i);
-                String name = allData.get("name").toString();
-                String listID = allData.get("listId").toString();
-                String id = allData.get("id").toString();
+            for (int i = 0; i < allDataPoints.size();i++) {
+                current = allDataPoints.get(i);
+                String name = current.get("name").toString();
                 // filter out unwanted data
-//                if(name ==""){
-//                    // delete entry
-//                }
-//                else{
-//
-//                }
+                if (name == "" || name == null) {
+                    allDataPoints.remove(i);
+                }
             }
+//                for (int i = 0; i < dataArray.length(); i++){
+//                JSONObject allData = dataArray.getJSONObject(i);
+//                String listID = allData.get("listId").toString();
+//                String name = allData.get("name").toString();
+//
+//                Collections.sort(dataArray,Collections.reverseOrder());
+//                dataArray = Arrays.sort(dataArray,)
+//            }
+
+            IdDataResult.setText(allDataPoints.toString());
         }
     }
 }
