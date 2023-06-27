@@ -11,6 +11,7 @@
         android:id="@+id/Welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_margin="10dp"
         android:text="Welcome to ID_Getter!"
         android:textColor="@color/black"
@@ -26,13 +27,26 @@
         android:id="@+id/update_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update Data" />
+        android:text="Update Data"
+        android:layout_gravity="center"/>
+
+    <ListView
+        android:id="@+id/list_Of_Res"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+    />
 
     <TextView
-        android:id="@+id/IdDataResult"
+        android:id="@+id/Id_Data_Result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:layout_gravity="center"
         android:text="Data From API"
         android:textColor="@color/black"
         android:textSize="15sp"
