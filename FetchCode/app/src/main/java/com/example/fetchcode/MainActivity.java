@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.fetchcode.models.Item;
+import com.example.fetchcode.utills.ApiService;
 import com.example.fetchcode.utills.NetworkU;
 
 import org.json.JSONArray;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,8 +32,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView IdDataResult;
     Button updateData;
     ListView list;
-    ArrayList<String> itemList;
-    ArrayAdapter<String> listAdapt;
+    ArrayList<Item> itemList;
+    ArrayList<String> itemlist2;
+    ArrayAdapter<Item> listAdapt;
+    ArrayAdapter<String> listAdapt2;
+    ArrayList<JSONObject>  allDataPoints;
 
 
     @Override
@@ -41,14 +47,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         IdDataResult = findViewById(R.id.Id_Data_Result);
         updateData = findViewById(R.id.update_data);
         list = findViewById(R.id.list_Of_Res);
+        itemList = new ArrayList<Item>();
         createList();
+
+
+
+        ApiService apiService = new ApiService();
+        apiService.fetchDataFromApi(new ApiService.ApiCallback() {
+            @Override
+            public void onSuccess(List<Item> items) {
+                // Handle successful API response here
+                for (Item item : items) {
+                    int id = item.getId();
+                    int listId = item.getListId();
+                        try {
+                            String name = item.getName();
+                            if(name != null)
+                            {
+                                if((name != "") == true){
+                                    Item currentItem = new Item();
+                                    currentItem.setId(id);
+                                    currentItem.setListId(listId);
+                                    currentItem.setName(name);
+                                    itemList.add(currentItem);
+                                }
+                            }
+                        } catch (NullPointerException e){
+                            System.err.println("NullPointerException occurred for item: " + item);
+                            // Continue the loop
+                    }
+
+                }
+                listAdapt = new ArrayAdapter<Item>(MainActivity.this, android.R.layout.simple_list_item_1, itemList);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        list.setAdapter(listAdapt);
+                    }
+                });
+//                list.setOnClickListener(new AdapterView.OnItemClickListener()) {
+//                    @Override
+//                    public void onItemClick(AdapterView<> adapterView, View view, int i, long l) {
+//
+//                    }
+//                }){;
+
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                // Handle API request failure here
+                // Display an error message or retry the request
+                throw new RuntimeException(errorMessage);
+            }
+        });
 
         updateData.setOnClickListener(this);
     }
 
     private void createList() {
-        itemList = new ArrayList<>();
-        listAdapt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_2, itemList);
+        itemlist2 = new ArrayList<String>();
+        listAdapt2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_2, itemlist2);
     }
 
     @Override
@@ -84,18 +143,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected void onPostExecute(String s) {
-            try {
-                if(!s.isEmpty()){
-                parseJson(s);
+            if (!s.isEmpty()) {
+                try {
+                    parseJson(s);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
         public void parseJson(String data) throws JSONException {
 ;
             JSONArray jsonArray = null;
-            ArrayList<JSONObject>  allDataPoints = new ArrayList<JSONObject>();
+            allDataPoints = new ArrayList<JSONObject>();
             JSONObject current = null;
 
             try{
@@ -119,11 +178,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(current.getString("name") != "null" || current.getString("name") != null){
                     String name = current.getString("name");
                     // filter out unwanted data
-                    if (name != "") {
+                    if (name != "" == true) {
                         allDataPoints.remove(i);
                     }
                     else{
-                        itemList.add(allDataPoints.get(i).toString());
+                        itemlist2.add(allDataPoints.get(i).toString());
                     }
                 }
             }
@@ -135,8 +194,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                Collections.sort(dataArray,Collections.reverseOrder());
 //                dataArray = Arrays.sort(dataArray,)
 //            }
-            IdDataResult.setText(allDataPoints.toString());
-            list.setAdapter(listAdapt);            listAdapt.notifyDataSetChanged();
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    IdDataResult.setText(allDataPoints.toString());
+                    list.setAdapter(listAdapt2);
+                    listAdapt2.notifyDataSetChanged();
+                }
+            });
+
         }
     }
 }

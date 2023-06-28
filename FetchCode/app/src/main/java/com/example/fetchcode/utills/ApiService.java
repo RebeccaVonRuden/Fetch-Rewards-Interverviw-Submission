@@ -2,7 +2,11 @@ package com.example.fetchcode.utills;
 
 import com.example.fetchcode.models.Item;
 import com.google.gson.Gson;
+
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -11,7 +15,7 @@ import okhttp3.Response;
 
 public class ApiService {
     public interface ApiCallback{
-        void onSuccess(Item myItem);
+        void onSuccess(List<Item> myItems);
         void onFailure(String errorMessage);
     }
 
@@ -24,7 +28,7 @@ public class ApiService {
     }
 
     public void fetchDataFromApi(ApiCallback callback) {
-        String url = "https://api.example.com/endpoint"; // Replace with your API endpoint URL
+        String url = "https://fetch-hiring.s3.amazonaws.com/hiring.json"; // Replace with your API endpoint URL
 
         Request request = new Request.Builder()
                 .url(url)
@@ -36,8 +40,12 @@ public class ApiService {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String responseBody = response.body().string();
-                    Item myItem = gson.fromJson(responseBody, myItem.class);
-                    callback.onSuccess(myItem);
+                    Item[] myItemArray = gson.fromJson(responseBody, Item[].class);
+                    List<Item> my_Items = Arrays.asList(myItemArray);
+                    callback.onSuccess(my_Items);
+
+//                    Item myItem = gson.fromJson(responseBody, Item.class);
+//                    callback.onSuccess(myItem);
                 } else {
                     callback.onFailure("Failed to fetch data from API. Response code: " + response.code());
                 }
