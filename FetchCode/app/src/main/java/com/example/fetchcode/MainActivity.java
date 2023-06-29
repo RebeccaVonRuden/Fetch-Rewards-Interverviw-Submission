@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     TextView Welcome;
     ListView list;
     ArrayList<Item> itemList;
-//    ArrayAdapter<Item> listAdapt;
     ArrayAdapter<String> listAdapt;
     ArrayList<String> itemString;
 
@@ -67,16 +66,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
-    public void sortByListID(){
-        Collections.sort(itemList,Item.ItemListIdSort);
-    }
-
-    public void sortByName(){
-        Collections.sort(itemList,Item.ItemNameSort);
-    }
-
     // Group items by listId
     private HashMap<Integer, List<Item>> groupItemsByListId(List<Item> items) {
         HashMap<Integer, List<Item>> groupedItems = new HashMap<>();
@@ -146,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         listAdapt = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, itemString);
     }
 
+    // prepare string for printing
     public static String prepareString(int listId, String name, int id){
         return "List Id: " + listId + ", Name: " + name + ", Id: " + id;
     }
