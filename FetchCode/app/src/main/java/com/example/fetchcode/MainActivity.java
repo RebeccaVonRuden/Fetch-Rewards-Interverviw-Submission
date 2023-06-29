@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -34,9 +36,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ListView list;
     ArrayList<Item> itemList;
     ArrayList<String> itemlist2;
-    ArrayAdapter<Item> listAdapt;
+//    ArrayAdapter<Item> listAdapt;
+    ArrayAdapter<String> listAdapt;
     ArrayAdapter<String> listAdapt2;
     ArrayList<JSONObject>  allDataPoints;
+    ArrayList<String> itemString;
 
 
     @Override
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateData = findViewById(R.id.update_data);
         list = findViewById(R.id.list_Of_Res);
         itemList = new ArrayList<Item>();
+        itemString = new ArrayList<String>();
         createList();
 
 
@@ -57,28 +62,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onSuccess(List<Item> items) {
                 // Handle successful API response here
+                Comparator<Item> compare = Comparator.comparing(Item -> Item.getId());
+                compare = compare.thenComparing(Comparator.comparing(Item -> Item.getName()));
+
                 for (Item item : items) {
                     int id = item.getId();
                     int listId = item.getListId();
                         try {
                             String name = item.getName();
-                            if(name != null)
-                            {
-                                if((name != "") == true){
+                            if (name != null && !name.isEmpty()) {
                                     Item currentItem = new Item();
                                     currentItem.setId(id);
                                     currentItem.setListId(listId);
                                     currentItem.setName(name);
                                     itemList.add(currentItem);
+
+
+                                    String tempString;
+                                    tempString = "Item Id: " +  currentItem.getListId()  + " , Name:  " + currentItem.getName() + " , Id: " + currentItem.getId();
+                                    itemString.add(tempString);
                                 }
-                            }
+                            Collections.sort(itemList);
                         } catch (NullPointerException e){
                             System.err.println("NullPointerException occurred for item: " + item);
                             // Continue the loop
                     }
 
                 }
-                listAdapt = new ArrayAdapter<Item>(MainActivity.this, android.R.layout.simple_list_item_1, itemList);
+//                listAdapt = new ArrayAdapter<Item>(MainActivity.this, android.R.layout.simple_list_item_1, itemList);
+                listAdapt = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, itemString);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

@@ -42,6 +42,7 @@ public class ApiService {
                     String responseBody = response.body().string();
                     Item[] myItemArray = gson.fromJson(responseBody, Item[].class);
                     List<Item> my_Items = Arrays.asList(myItemArray);
+
                     callback.onSuccess(my_Items);
 
 //                    Item myItem = gson.fromJson(responseBody, Item.class);

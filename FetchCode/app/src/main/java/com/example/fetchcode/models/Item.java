@@ -2,10 +2,10 @@ package com.example.fetchcode.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Item {
+public class Item implements Comparable<Item>{
     @SerializedName("id")
     int id;
-    @SerializedName("listId")
+    @SerializedName("ItemId")
     int listId;
     @SerializedName("name")
     String name;
@@ -34,5 +34,14 @@ public class Item {
 
     public void setName(String newName) {
         name = newName;
+    }
+
+    @Override
+    public int compareTo(Item item) {
+        int result = Integer.compare(this.listId, item.listId);
+        if (result == 0) {
+            result = this.name.compareTo(item.name);
+        }
+        return result;
     }
 }
