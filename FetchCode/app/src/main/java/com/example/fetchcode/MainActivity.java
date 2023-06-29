@@ -112,11 +112,21 @@ public class MainActivity extends AppCompatActivity {
                     } else if (name2 == null) {
                         return 1;
                     } else {
-                        name1 = name1.toLowerCase();
-                        name2 = name2.toLowerCase();
-                        return name1.compareTo(name2);
+                        int num1 = extractNumber(name1);
+                        int num2 = extractNumber(name2);
+                        return Integer.compare(num1, num2);
                     }
                 }
+            }
+            // Helper method to extract numerical value from a string
+            private int extractNumber(String name) {
+                String[] parts = name.split("\\s+");
+                for (String part : parts) {
+                    if (part.matches("\\d+")) {
+                        return Integer.parseInt(part);
+                    }
+                }
+                return 0; // Default value if no numerical value found
             }
         };
         Collections.sort(sortedGroups, groupComparator);
@@ -129,11 +139,14 @@ public class MainActivity extends AppCompatActivity {
             for (Item item : group) {
                 String name = item.getName();
                 if (name != null && !name.isEmpty()) {
-                    String tempString = "List Id: " + item.getListId() + ", Name: " + item.getName() + ", Id: " + item.getId();
-                    itemString.add(tempString);
+                    itemString.add(prepareString(item.getListId(), item.getName(), item.getId()));
                 }
             }
         }
         listAdapt = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, itemString);
+    }
+
+    public static String prepareString(int listId, String name, int id){
+        return "List Id: " + listId + ", Name: " + name + ", Id: " + id;
     }
 }

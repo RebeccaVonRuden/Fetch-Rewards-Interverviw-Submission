@@ -55,4 +55,18 @@ public class ExampleUnitTest {
         });
 
     }
+
+    @Test
+    public void testPrint(){
+        //Arrange
+        Item item = new Item();
+        item.setName("Item 235");
+        item.setId(235);
+        item.setListId(2);
+        String desiredString= "List Id: 2" + ", Name: Item 235" + ", Id: 235";
+        //Act
+        String sut = MainActivity.prepareString(item.getListId(),  item.getName(),  item.getId());
+        //Assert
+        assertEquals(desiredString,sut);
+    }
 }
