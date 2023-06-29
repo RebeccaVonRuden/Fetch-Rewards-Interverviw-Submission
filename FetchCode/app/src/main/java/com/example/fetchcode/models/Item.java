@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class Item implements Comparable<Item>{
     @SerializedName("id")
     int id;
-    @SerializedName("ItemId")
+    @SerializedName("listId")
     int listId;
     @SerializedName("name")
     String name;
@@ -29,19 +29,25 @@ public class Item implements Comparable<Item>{
     }
 
     public void setListId(int newListId){
-        listId = newListId;
+        listId= newListId;
     }
-
     public void setName(String newName) {
         name = newName;
     }
 
+
+//    @Override
+//    public int compareTo(Item item) {
+//        if (this.listId == item.listId) {
+//            return this.name.compareTo(item.name);
+//        } else {
+//            return Integer.compare(this.listId, item.listId);
+//        }
+//    }
+
     @Override
     public int compareTo(Item item) {
-        int result = Integer.compare(this.listId, item.listId);
-        if (result == 0) {
-            result = this.name.compareTo(item.name);
-        }
-        return result;
+        return this.getListId() > item.getListId() ? 1: (this.getListId() < item.getListId() ? -1 : 0);
     }
+
 }

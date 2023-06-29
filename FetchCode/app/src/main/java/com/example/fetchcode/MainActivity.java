@@ -24,7 +24,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -62,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onSuccess(List<Item> items) {
                 // Handle successful API response here
-                Comparator<Item> compare = Comparator.comparing(Item -> Item.getId());
-                compare = compare.thenComparing(Comparator.comparing(Item -> Item.getName()));
+//                Comparator<Item> compare = Comparator.comparing(Item -> Item.getId());
+//                compare = compare.thenComparing(Comparator.comparing(Item -> Item.getName()));
 
                 for (Item item : items) {
                     int id = item.getId();
@@ -76,18 +75,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     currentItem.setListId(listId);
                                     currentItem.setName(name);
                                     itemList.add(currentItem);
-
-
-                                    String tempString;
-                                    tempString = "Item Id: " +  currentItem.getListId()  + " , Name:  " + currentItem.getName() + " , Id: " + currentItem.getId();
-                                    itemString.add(tempString);
                                 }
-                            Collections.sort(itemList);
+
                         } catch (NullPointerException e){
                             System.err.println("NullPointerException occurred for item: " + item);
                             // Continue the loop
                     }
-
+                    Collections.sort(itemList);
+                    for(int i =0; i < itemList.size();i++){
+                        Item currentItem = itemList.get(i);
+                        String tempString;
+                        tempString = "List Id: " +  currentItem.getListId()  + " , Name:  " + currentItem.getName() + " , Id: " + currentItem.getId();
+                        itemString.add(tempString);
+                    }
                 }
 //                listAdapt = new ArrayAdapter<Item>(MainActivity.this, android.R.layout.simple_list_item_1, itemList);
                 listAdapt = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, itemString);
@@ -97,12 +97,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         list.setAdapter(listAdapt);
                     }
                 });
-//                list.setOnClickListener(new AdapterView.OnItemClickListener()) {
-//                    @Override
-//                    public void onItemClick(AdapterView<> adapterView, View view, int i, long l) {
-//
-//                    }
-//                }){;
 
             }
 
@@ -198,14 +192,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-//                for (int i = 0; i < dataArray.length(); i++){
-//                JSONObject allData = dataArray.getJSONObject(i);
-//                String listID = allData.get("listId").toString();
-//                String name = allData.get("name").toString();
-//
-//                Collections.sort(dataArray,Collections.reverseOrder());
-//                dataArray = Arrays.sort(dataArray,)
-//            }
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
